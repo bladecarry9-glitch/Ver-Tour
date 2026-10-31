@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VER TOUR - Free Fire Tournaments</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <!-- Account Ban Screen -->
+    <div id="ban-screen" class="hidden">
+        <h1 class="brand-font" style="color: var(--danger); font-size: 2.2rem; margin-bottom: 8px;">VER TOUR</h1>
+        <div class="glass-card" style="width: 100%; border-color: var(--danger); margin-top: 20px;">
+            <i class="fa-solid fa-ban" style="font-size: 3rem; color: var(--danger); margin-bottom: 12px;"></i>
+            <h2 style="color: var(--danger); margin-bottom: 8px;">Account Banned</h2>
+            <p id="ban-reason-text" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">Your account has been suspended due to policy violations.</p>
+            <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #991b1b);" onclick="switchTab('support')">Contact Support</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+
+        <!-- ================= AUTHENTICATION SCREEN ================= -->
+        <div id="auth-screen" class="screen active">
+            <div style="width: 100%; max-width: 380px;">
+                <h1 class="auth-logo">VER TOUR</h1>
+                <p class="auth-subtitle">Ultimate Free Fire Esports Platform</p>
+
+                <!-- Login Form -->
+                <div id="login-form-container">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="login-email" placeholder="Enter your email">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password">
+                        <i class="fa-solid fa-eye toggle-password" onclick="togglePasswordVisibility('login-password', this)"></i>
+                    </div>
+                    <button class="btn-primary" onclick="handleLogin()">Login to Arena</button>
+                    <p style="text-align: center; margin-top: 16px; color: var(--text-muted); font-size: 0.9rem;">
+                        Don't have an account? <a href="#" style="color: var(--electric-blue); text-decoration: none;" onclick="toggleAuthMode('signup')">Sign Up</a>
+                    </p>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signup-form-container" class="hidden">
+                    <div class="input-group">
+                        <label>Free Fire UID</label>
+                        <input type="text" id="signup-ff-uid" placeholder="e.g. 123456789">
+                    </div>
+                    <div class="input-group">
+                        <label>In-Game Nickname</label>
+                        <input type="text" id="signup-nickname" placeholder="e.g. VER•LEGEND">
+                    </div>
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signup-fullname" placeholder="Enter your full name">
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signup-email" placeholder="Enter your email">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signup-password" placeholder="At least 6 characters">
+                        <i class="fa-solid fa-eye toggle-password" onclick="togglePasswordVisibility('signup-password', this)"></i>
+                    </div>
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="signup-confirm-password" placeholder="Confirm your password">
+                        <i class="fa-solid fa-eye toggle-password" onclick="togglePasswordVisibility('signup-confirm-password', this)"></i>
+                    </div>
+                    <button class="btn-primary" onclick="handleSignup()">Create Account</button>
+                    <p style="text-align: center; margin-top: 16px; color: var(--text-muted); font-size: 0.9rem;">
+                        Already registered? <a href="#" style="color: var(--electric-blue); text-decoration: none;" onclick="toggleAuthMode('login')">Login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MAIN APP HEADER ================= -->
+        <header class="app-header" id="main-header" style="display: none;">
+            <div class="user-mini-profile">
+                <img src="" id="header-avatar" class="avatar" alt="Avatar">
+                <div>
+                    <h3 id="header-nickname" style="font-size: 1rem; color: var(--text-main);">Loading...</h3>
+                    <span id="header-rank" style="font-size: 0.75rem; color: var(--electric-blue); font-weight: 700;">Bronze</span>
+                </div>
+            </div>
+            <div class="flex gap-2 items-center">
+                <div class="wallet-badge" onclick="switchTab('wallet')">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span id="header-wallet">৳0</span>
+                </div>
+                <div style="position: relative; cursor: pointer; padding: 6px;" onclick="switchTab('notifications')">
+                    <i class="fa-solid fa-bell" style="font-size: 1.2rem; color: var(--text-main);"></i>
+                    <span id="notification-dot" class="hidden" style="position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ================= TAB 1: HOME DASHBOARD ================= -->
+        <div id="tab-home" class="screen">
+            <div class="banner-slider glass-card" id="home-banner-container" style="padding: 0;">
+                <img id="active-promo-banner" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800" alt="Banner">
+                <div class="banner-content">
+                    <h3 id="banner-title" style="font-size: 1.1rem; color: var(--cyan-highlight);">VER TOUR SEASON 1</h3>
+                    <p id="banner-desc" style="font-size: 0.8rem; color: var(--text-muted);">Join daily Free Fire clashes & win cash prizes!</p>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                <div class="flex items-center gap-4">
+                    <div style="position: relative;">
+                        <img src="" id="dash-avatar" class="avatar" style="width: 56px; height: 56px;" alt="Avatar">
+                        <span id="dash-vip-badge" style="position: absolute; bottom: -4px; right: -4px; background: var(--primary); font-size: 0.65rem; padding: 2px 6px; border-radius: 8px; font-weight: 700;">VIP 1</span>
+                    </div>
+                    <div>
+                        <h2 id="dash-nickname" style="font-size: 1.1rem;">Gamer</h2>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">FF UID: <span id="dash-ff-uid" style="color: var(--electric-blue);">---</span></p>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Rank: <span id="dash-rank-name" style="color: var(--cyan-highlight); font-weight: 700;">Bronze</span></p>
+                    </div>
+                </div>
+                <button class="btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" onclick="switchTab('profile')">Profile</button>
+            </div>
+
+            <h3 style="font-size: 1rem; margin-bottom: 8px; color: var(--cyan-highlight);"><i class="fa-solid fa-bullhorn"></i> Notices & Announcements</h3>
+            <div id="home-notices-list" style="margin-bottom: 16px;">
+                <div class="glass-card" style="padding: 12px;">
+                    <p style="font-size: 0.9rem; font-weight: 600;">Welcome to VER TOUR!</p>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Explore our platform and join verified Free Fire matches.</p>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1rem; margin-bottom: 8px; color: var(--electric-blue);"><i class="fa-solid fa-trophy"></i> Featured Tournament</h3>
+            <div id="home-featured-tournament">
+                <div class="glass-card" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                    Loading featured tournament...
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: TOURNAMENTS ================= -->
+        <div id="tab-tournaments" class="screen">
+            <h2 class="brand-font" style="margin-bottom: 16px; font-size: 1.4rem;"><i class="fa-solid fa-gamepad" style="color: var(--electric-blue);"></i> Active Tournaments</h2>
+            <div id="tournaments-list">
+                <div style="text-align: center; color: var(--text-muted); margin-top: 40px;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 8px;"></i>
+                    <p>Loading tournaments...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: GLOBAL CHAT ================= -->
+        <div id="tab-chat" class="screen">
+            <h2 class="brand-font" style="margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-solid fa-globe" style="color: var(--cyan-highlight);"></i> Global Chat</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages-box"></div>
+                <div class="chat-input-box">
+                    <input type="text" id="chat-input" placeholder="Type a message..." style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; color: white; outline: none;">
+                    <button class="btn-primary" style="width: auto; padding: 0 16px;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: NOTIFICATIONS ================= -->
+        <div id="tab-notifications" class="screen">
+            <div class="flex justify-between items-center" style="margin-bottom: 16px;">
+                <h2 class="brand-font" style="font-size: 1.4rem;"><i class="fa-solid fa-bell" style="color: var(--warning);"></i> Notifications</h2>
+                <button class="btn-outline" style="font-size: 0.75rem; padding: 4px 8px;" onclick="markAllNotificationsRead()">Mark all read</button>
+            </div>
+            <div id="notifications-list">
+                <div style="text-align: center; color: var(--text-muted); margin-top: 40px;">
+                    <p>No notifications yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: USER PROFILE & LIVE RANK SYSTEM ================= -->
+        <div id="tab-profile" class="screen">
+            <div class="glass-card" style="text-align: center; margin-bottom: 16px;">
+                <div style="position: relative; width: 80px; height: 80px; margin: 0 auto 12px auto;">
+                    <img id="profile-avatar" class="avatar" style="width: 80px; height: 80px;" src="" alt="Avatar">
+                    <label for="avatar-input" style="position: absolute; bottom: 0; right: 0; background: var(--primary); width: 26px; height: 26px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                        <i class="fa-solid fa-camera" style="font-size: 0.8rem;"></i>
+                    </label>
+                    <input type="file" id="avatar-input" class="hidden" accept="image/*" onchange="updateProfilePicture(this)">
+                </div>
+                <h2 id="profile-nickname" style="font-size: 1.2rem;">Nickname</h2>
+                <p id="profile-fullname" style="font-size: 0.85rem; color: var(--text-muted);">Full Name</p>
+                <div class="flex justify-between" style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; text-align: left;">
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Free Fire UID</span>
+                        <p id="profile-ff-uid" style="font-weight: 600; color: var(--electric-blue);">---</p>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Firebase UID</span>
+                        <p id="profile-fb-uid" style="font-size: 0.8rem; font-weight: 500;">---</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Rank Progress Card -->
+            <div class="glass-card" style="margin-bottom: 16px;">
+                <div class="flex justify-between items-center" style="margin-bottom: 6px;">
+                    <span style="font-size: 0.9rem; font-weight: 600;"><i class="fa-solid fa-medal" style="color: var(--electric-blue);"></i> Live Rank: <span id="profile-rank-name" style="color: var(--cyan-highlight); font-weight: 700;">Bronze</span></span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Points: <b id="profile-points" style="color: var(--text-main);">0</b></span>
+                </div>
+                <div class="slots-progress">
+                    <div id="profile-rank-progress" class="slots-fill" style="width: 0%;"></div>
+                </div>
+                <p id="profile-next-rank-info" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; text-align: right;">Progress to next rank</p>
+                
+                <div class="flex justify-between items-center" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                    <span style="font-size: 0.9rem; font-weight: 600;">VIP Status</span>
+                    <span id="profile-vip-status" style="color: var(--cyan-highlight); font-weight: 700;">VIP 1</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <button class="btn-outline" style="border-color: var(--border-color);" onclick="switchTab('support')"><i class="fa-solid fa-headset"></i> Help & Support Center</button>
+                <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </div>
+
+        <!-- ================= WALLET & ADD MONEY ================= -->
+        <div id="tab-wallet" class="screen">
+            <h2 class="brand-font" style="margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-solid fa-wallet" style="color: var(--cyan-highlight);"></i> My Wallet</h2>
+            <div class="glass-card" style="text-align: center; margin-bottom: 16px; background: linear-gradient(135deg, #121624, #1b1035);">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Available Balance</p>
+                <h1 id="wallet-balance-amount" style="font-size: 2.2rem; color: var(--cyan-highlight); margin: 4px 0;">৳0</h1>
+                <button class="btn-primary" style="margin-top: 12px;" onclick="openAddMoneyModal()"><i class="fa-solid fa-plus-circle"></i> Add Money</button>
+            </div>
+
+            <h3 style="font-size: 1rem; margin-bottom: 8px;">Transaction History</h3>
+            <div id="transaction-history-list">
+                <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">No transactions recorded yet.</p>
+            </div>
+        </div>
+
+        <!-- ================= HELP & SUPPORT ================= -->
+        <div id="tab-support" class="screen">
+            <h2 class="brand-font" style="margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-solid fa-headset" style="color: var(--electric-blue);"></i> Help & Support</h2>
+            <div class="glass-card" style="margin-bottom: 16px;">
+                <p style="font-size: 0.9rem; margin-bottom: 10px;">Need assistance with matchmaking or payments? Send a message to our admin team.</p>
+                <div class="input-group">
+                    <label>Issue Type</label>
+                    <select id="support-type">
+                        <option value="payment">Payment Issue</option>
+                        <option value="tournament">Tournament Issue</option>
+                        <option value="account">Account & Ban Issue</option>
+                        <option value="other">General Inquiry</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Message</label>
+                    <textarea id="support-msg" rows="3" placeholder="Describe your issue..." style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; outline: none;"></textarea>
+                </div>
+                <button class="btn-primary" onclick="submitSupportTicket()">Submit Support Ticket</button>
+            </div>
+            <h3 style="font-size: 1rem; margin-bottom: 8px;">Previous Tickets</h3>
+            <div id="support-tickets-list">
+                <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">No support tickets submitted.</p>
+            </div>
+        </div>
+
+        <!-- ================= BOTTOM NAVIGATION BAR ================= -->
+        <nav class="bottom-nav" id="main-bottom-nav" style="display: none;">
+            <a class="nav-item active" onclick="switchTab('home')" id="nav-home">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('tournaments')" id="nav-tournaments">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>Tournaments</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('chat')" id="nav-chat">
+                <i class="fa-solid fa-globe"></i>
+                <span>Chat</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('notifications')" id="nav-notifications">
+                <i class="fa-solid fa-bell"></i>
+                <span>Alerts</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('profile')" id="nav-profile">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <div id="modal-container"></div>
+
+    <!-- Custom Script File -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
